@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
-import 'package:klimatrack_app/features/homepage/presentation/home_page.dart';
+import 'package:klimatrack_app/features/homepage/presentation/pages/home_page.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
