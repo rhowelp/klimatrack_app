@@ -1,4 +1,4 @@
-import 'dart:developer';
+// ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,6 +10,8 @@ import 'package:klimatrack_app/features/homepage/presentation/widgets/loading_wi
 import 'package:klimatrack_app/features/homepage/presentation/widgets/search_bar.dart';
 import 'package:klimatrack_app/features/homepage/presentation/widgets/weather_card.dart';
 
+/// HomePage widget that displays the main weather interface
+/// Handles weather search, location-based weather, and format selection
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -20,7 +22,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final _locationService = LocationService();
   final _searchController = TextEditingController();
-  ApiFormat _selectedFormat = ApiFormat.json; 
+  ApiFormat _selectedFormat = ApiFormat.json;
 
   @override
   void initState() {
@@ -28,8 +30,9 @@ class _HomePageState extends State<HomePage> {
     _getCurrentLocation();
   }
 
+  /// Fetches weather data for the current location
+  /// Handles location service checks and permission validation
   Future<void> _getCurrentLocation() async {
-    log('Starting location fetch with format: ${_selectedFormat.name}');
     try {
       final isEnabled = await _locationService.isLocationServiceEnabled();
       if (!isEnabled && mounted) {
@@ -43,14 +46,14 @@ class _HomePageState extends State<HomePage> {
         return;
       }
 
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
       final position = await _locationService.getCurrentLocation();
       if (position != null && mounted) {
-        log('Location obtained, fetching weather data with format: ${_selectedFormat.name}');
         context.read<WeatherBloc>().add(
               FetchWeatherByLocation(
                 latitude: position.latitude,
                 longitude: position.longitude,
-                format: _selectedFormat, 
+                format: _selectedFormat,
               ),
             );
       } else if (mounted) {
@@ -63,7 +66,6 @@ class _HomePageState extends State<HomePage> {
         );
       }
     } catch (e) {
-      log('Error in _getCurrentLocation', error: e);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -75,9 +77,9 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  /// Handles city search with the selected format
   void _searchCity(String city, ApiFormat format) {
     if (city.isNotEmpty) {
-      log('Searching for city: $city with format: ${format.name}');
       context.read<WeatherBloc>().add(FetchWeatherByCity(city, format: format));
     }
   }
@@ -99,6 +101,13 @@ class _HomePageState extends State<HomePage> {
               controller: _searchController,
               onSearch: _searchCity,
               onLocationPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Fetching current location...'),
+                    duration: Duration(seconds: 5),
+                  ),
+                );
+
                 _searchController.clear();
                 _getCurrentLocation();
               },

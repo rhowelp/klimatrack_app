@@ -16,7 +16,6 @@ class DioClient {
 
     dio.interceptors.add(LogInterceptor(
       requestBody: true,
-      requestHeader: true,
       responseBody: true,
     ));
 

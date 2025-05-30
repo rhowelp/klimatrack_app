@@ -1,5 +1,5 @@
 extension StringCasingExtension on String {
-  String toCapitalizedEachWord() => toBeginningOfSentenceCase(this)!;
+  String toCapitalizedEachWord() => toBeginningOfSentenceCase(this);
 
   String toBeginningOfSentenceCase(String input) {
     if (input.isEmpty) {

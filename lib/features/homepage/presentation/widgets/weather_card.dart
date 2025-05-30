@@ -95,6 +95,7 @@ class _WeatherCardState extends State<WeatherCard>
             ],
           ),
         ),
+        const SizedBox(height: 20),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
