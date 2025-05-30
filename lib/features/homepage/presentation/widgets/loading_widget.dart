@@ -1,22 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:klimatrack_app/domain/constants/api_format.dart';
 
 class LoadingWidget extends StatelessWidget {
-  const LoadingWidget({super.key});
+  final ApiFormat format;
+
+  const LoadingWidget({
+    super.key,
+    this.format = ApiFormat.json,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
+    return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          CircularProgressIndicator(
+          const CircularProgressIndicator(
             color: Colors.white,
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           Text(
-            'Loading weather data...',
-            style: TextStyle(
+            '${format.name.toUpperCase()} Format: Fetching Weather...',
+            style: const TextStyle(
               color: Colors.white,
+              fontSize: 16,
             ),
           ),
         ],

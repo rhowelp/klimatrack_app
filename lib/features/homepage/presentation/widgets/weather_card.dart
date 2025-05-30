@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:gif/gif.dart';
 import 'package:intl/intl.dart';
 import 'package:klimatrack_app/data/models/weather_model.dart';
-import 'package:klimatrack_app/utils/string_extensions.dart';
+import 'package:klimatrack_app/domain/services/utils.dart';
 
 class WeatherCard extends StatefulWidget {
   final WeatherModel weather;

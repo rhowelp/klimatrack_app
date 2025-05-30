@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:klimatrack_app/domain/constants/api_format.dart';
 import 'package:klimatrack_app/domain/services/location_service.dart';
 import 'package:klimatrack_app/features/homepage/presentation/bloc/weather_bloc.dart';
 import 'package:klimatrack_app/features/homepage/presentation/widgets/error_widget.dart';
@@ -19,6 +20,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final _locationService = LocationService();
   final _searchController = TextEditingController();
+  ApiFormat _selectedFormat = ApiFormat.json; 
 
   @override
   void initState() {
@@ -27,7 +29,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _getCurrentLocation() async {
-    log('Starting location fetch');
+    log('Starting location fetch with format: ${_selectedFormat.name}');
     try {
       final isEnabled = await _locationService.isLocationServiceEnabled();
       if (!isEnabled && mounted) {
@@ -43,11 +45,12 @@ class _HomePageState extends State<HomePage> {
 
       final position = await _locationService.getCurrentLocation();
       if (position != null && mounted) {
-        log('Location obtained, fetching weather data');
+        log('Location obtained, fetching weather data with format: ${_selectedFormat.name}');
         context.read<WeatherBloc>().add(
               FetchWeatherByLocation(
                 latitude: position.latitude,
                 longitude: position.longitude,
+                format: _selectedFormat, 
               ),
             );
       } else if (mounted) {
@@ -72,10 +75,10 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  void _searchCity(String city) {
+  void _searchCity(String city, ApiFormat format) {
     if (city.isNotEmpty) {
-      log('Searching for city: $city');
-      context.read<WeatherBloc>().add(FetchWeatherByCity(city));
+      log('Searching for city: $city with format: ${format.name}');
+      context.read<WeatherBloc>().add(FetchWeatherByCity(city, format: format));
     }
   }
 
@@ -99,12 +102,17 @@ class _HomePageState extends State<HomePage> {
                 _searchController.clear();
                 _getCurrentLocation();
               },
+              onFormatChanged: (format) {
+                setState(() {
+                  _selectedFormat = format;
+                });
+              },
             ),
             Expanded(
               child: BlocBuilder<WeatherBloc, WeatherState>(
                 builder: (context, state) {
                   if (state is WeatherLoading) {
-                    return const LoadingWidget();
+                    return LoadingWidget(format: _selectedFormat);
                   } else if (state is WeatherLoaded) {
                     return SingleChildScrollView(
                       padding: const EdgeInsets.all(16),
