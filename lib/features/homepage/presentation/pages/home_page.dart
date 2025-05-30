@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:klimatrack_app/domain/services/location_service.dart';
 import 'package:klimatrack_app/features/homepage/presentation/bloc/weather_bloc.dart';
+import 'package:klimatrack_app/features/homepage/presentation/widgets/error_widget.dart';
+import 'package:klimatrack_app/features/homepage/presentation/widgets/loading_widget.dart';
+import 'package:klimatrack_app/features/homepage/presentation/widgets/search_bar.dart';
 import 'package:klimatrack_app/features/homepage/presentation/widgets/weather_card.dart';
 
 class HomePage extends StatefulWidget {
@@ -85,80 +88,39 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.green,
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            children: [
-              TextField(
-                controller: _searchController,
-                decoration: InputDecoration(
-                  hintText: 'Search city...',
-                  prefixIcon: const Icon(Icons.search),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  suffixIcon: IconButton(
-                    icon: const Icon(Icons.clear),
-                    onPressed: () {
-                      _searchController.clear();
-                      _getCurrentLocation();
-                    },
-                  ),
-                ),
-                onSubmitted: _searchCity,
-              ),
-              const SizedBox(height: 20),
-              Expanded(
-                child: BlocBuilder<WeatherBloc, WeatherState>(
-                  builder: (context, state) {
-                    if (state is WeatherLoading) {
-                      return const Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            CircularProgressIndicator(),
-                            SizedBox(height: 16),
-                            Text('Loading weather data...'),
-                          ],
-                        ),
-                      );
-                    } else if (state is WeatherLoaded) {
-                      return WeatherCard(weather: state.weather);
-                    } else if (state is WeatherError) {
-                      return Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              state.message,
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(color: Colors.red),
-                            ),
-                            const SizedBox(height: 16),
-                            ElevatedButton(
-                              onPressed: _getCurrentLocation,
-                              child: const Text('Try Again'),
-                            ),
-                          ],
-                        ),
-                      );
-                    }
-                    return const Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          CircularProgressIndicator(),
-                          SizedBox(height: 16),
-                          Text('Initializing...'),
-                        ],
-                      ),
+        child: Column(
+          children: [
+            WeatherSearchBar(
+              controller: _searchController,
+              onSearch: _searchCity,
+              onLocationPressed: () {
+                _searchController.clear();
+                _getCurrentLocation();
+              },
+            ),
+            Expanded(
+              child: BlocBuilder<WeatherBloc, WeatherState>(
+                builder: (context, state) {
+                  if (state is WeatherLoading) {
+                    return const LoadingWidget();
+                  } else if (state is WeatherLoaded) {
+                    return SingleChildScrollView(
+                      padding: const EdgeInsets.all(16),
+                      child: WeatherCard(weather: state.weather),
                     );
-                  },
-                ),
+                  } else if (state is WeatherError) {
+                    return WeatherErrorWidget(
+                      message: state.message,
+                      onRetry: _getCurrentLocation,
+                    );
+                  }
+                  return const LoadingWidget();
+                },
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
