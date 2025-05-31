@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider<WeatherBloc>(
       create: (context) {
-        final bloc = di.dpLocator<WeatherBloc>();
+        final bloc = di.dpLocator.get<WeatherBloc>();
         bloc.add(
           const FetchCurrentLocationWeather(format: ApiFormat.json),
         );

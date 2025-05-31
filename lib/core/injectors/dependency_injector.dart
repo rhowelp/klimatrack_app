@@ -1,4 +1,5 @@
 import 'package:get_it/get_it.dart';
+import 'package:dio/dio.dart';
 import 'package:klimatrack_app/core/services/dio_client.dart';
 import 'package:klimatrack_app/core/services/location_service.dart';
 import 'package:klimatrack_app/data/repositories/openweather_repository.dart';
@@ -10,22 +11,28 @@ final dpLocator = GetIt.instance;
 
 Future<void> init() async {
   // Services
-  dpLocator.registerLazySingleton(() => DioClient.create());
-  dpLocator.registerLazySingleton(() => LocationService());
+  dpLocator.registerLazySingleton<Dio>(() => DioClient.create());
+  dpLocator.registerLazySingleton<LocationService>(() => LocationService());
 
   // Repositories
-  dpLocator.registerLazySingleton(() => OpenWeatherRepositoryImpl(dpLocator()));
+  dpLocator.registerLazySingleton<OpenWeatherRepositoryImpl>(
+    () => OpenWeatherRepositoryImpl(dpLocator<Dio>()),
+  );
 
   // Use Cases
-  dpLocator.registerLazySingleton(() => GetWeatherByCityUseCase(dpLocator()));
-  dpLocator.registerLazySingleton(() => GetWeatherByLocationUseCase(dpLocator()));
+  dpLocator.registerLazySingleton<GetWeatherByCityUseCase>(
+    () => GetWeatherByCityUseCase(dpLocator<OpenWeatherRepositoryImpl>()),
+  );
+  dpLocator.registerLazySingleton<GetWeatherByLocationUseCase>(
+    () => GetWeatherByLocationUseCase(dpLocator<OpenWeatherRepositoryImpl>()),
+  );
 
   // Bloc
-  dpLocator.registerFactory(
+  dpLocator.registerFactory<WeatherBloc>(
     () => WeatherBloc(
-      getWeatherByCity: dpLocator(),
-      getWeatherByLocation: dpLocator(),
-      locationService: dpLocator(),
+      getWeatherByCity: dpLocator<GetWeatherByCityUseCase>(),
+      getWeatherByLocation: dpLocator<GetWeatherByLocationUseCase>(),
+      locationService: dpLocator<LocationService>(),
     ),
   );
 }

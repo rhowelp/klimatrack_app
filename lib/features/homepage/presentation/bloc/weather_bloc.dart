@@ -29,9 +29,12 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
     FetchWeatherByCity event,
     Emitter<WeatherState> emit,
   ) async {
-    emit(WeatherLoading(
+    emit(
+      WeatherLoading(
         message:
-            'Fetching weather for ${event.city} in ${event.format.name.toUpperCase()} format...'));
+            'Fetching weather for ${event.city} in ${event.format.name.toUpperCase()} format...',
+      ),
+    );
     try {
       final weather = await getWeatherByCity(event.city, event.format);
       emit(WeatherLoaded(weather: weather));
@@ -44,9 +47,12 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
     FetchWeatherByLocation event,
     Emitter<WeatherState> emit,
   ) async {
-    emit(WeatherLoading(
+    emit(
+      WeatherLoading(
         message:
-            'Fetching weather for location (${event.latitude}, ${event.longitude}) in ${event.format.name.toUpperCase()} format...'));
+            'Fetching weather for location (${event.latitude}, ${event.longitude}) in ${event.format.name.toUpperCase()} format...',
+      ),
+    );
     try {
       final weather = await getWeatherByLocation(
           event.latitude, event.longitude, event.format);
@@ -60,9 +66,12 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
     FetchCurrentLocationWeather event,
     Emitter<WeatherState> emit,
   ) async {
-    emit(WeatherLoading(
+    emit(
+      WeatherLoading(
         message:
-            'Fetching weather for current location in ${event.format.name.toUpperCase()} format...'));
+            'Fetching weather for current location in ${event.format.name.toUpperCase()} format...',
+      ),
+    );
     try {
       final isEnabled = await locationService.isLocationServiceEnabled();
       if (!isEnabled) {
