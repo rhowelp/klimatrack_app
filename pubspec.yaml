@@ -1,5 +1,5 @@
 name: klimatrack_app
-description: "A new Flutter project."
+description: "A clean and modern weather tracking app that fetches data via JSON and XML formats."
 publish_to: 'none'
 
 version: 1.0.0+1
