@@ -1,26 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:klimatrack_app/data/repositories/openweather_repository.dart';
-import 'package:klimatrack_app/domain/services/dio_client.dart';
+
+import 'package:klimatrack_app/core/constants/api_format.dart';
+import 'package:klimatrack_app/core/injectors/dependency_injector.dart' as di;
 import 'package:klimatrack_app/features/homepage/presentation/bloc/weather_bloc.dart';
 import 'package:klimatrack_app/features/splash/presentation/splash_page.dart';
 
-void main() {
-  final dio = DioClient.create();
-  final weatherRepository = OpenWeatherApiImpl(dio);
-  
-  runApp(MyApp(openWeatherApiImpl: weatherRepository));
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await di.init();
+
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key, required this.openWeatherApiImpl});
-
-  final OpenWeatherApiImpl openWeatherApiImpl;
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => WeatherBloc(openWeatherApiImpl),
+    return BlocProvider<WeatherBloc>(
+      create: (context) {
+        final bloc = di.dpLocator<WeatherBloc>();
+        bloc.add(
+          const FetchCurrentLocationWeather(format: ApiFormat.json),
+        );
+        return bloc;
+      },
       child: MaterialApp(
         title: 'Klimatrack',
         theme: ThemeData(

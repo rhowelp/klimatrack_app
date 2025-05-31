@@ -10,7 +10,6 @@ environment:
 dependencies:
   animate_do: ^4.2.0
   bloc: ^8.1.4
-  cupertino_icons: ^1.0.8
   dio: ^5.8.0+1
   equatable: ^2.0.7
   flutter:
@@ -19,7 +18,7 @@ dependencies:
   freezed: ^2.4.7
   freezed_annotation: ^2.4.1
   geolocator: ^11.0.0
-  gif: ^2.3.0
+  get_it: ^7.6.4
   intl: ^0.20.2
   json_annotation: ^4.9.0
   xml: ^6.5.0

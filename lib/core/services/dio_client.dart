@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:klimatrack_app/domain/constants/constants.dart';
+import 'package:klimatrack_app/core/constants/constants.dart';
 
 class DioClient {
   static Dio create() {

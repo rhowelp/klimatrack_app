@@ -1,18 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:klimatrack_app/domain/constants/api_format.dart';
+import 'package:klimatrack_app/core/constants/api_format.dart';
 
 class WeatherSearchBar extends StatefulWidget {
   final TextEditingController controller;
   final Function(String, ApiFormat) onSearch;
-  final VoidCallback onLocationPressed;
-  final Function(ApiFormat) onFormatChanged;
+  final Function(ApiFormat) onLocationPressed;
 
   const WeatherSearchBar({
     super.key,
     required this.controller,
     required this.onSearch,
     required this.onLocationPressed,
-    required this.onFormatChanged,
   });
 
   @override
@@ -25,7 +23,10 @@ class _WeatherSearchBarState extends State<WeatherSearchBar> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 16.0,
+        vertical: 8.0,
+      ),
       child: Row(
         children: [
           Expanded(
@@ -40,7 +41,7 @@ class _WeatherSearchBarState extends State<WeatherSearchBar> {
                 ),
                 suffixIcon: IconButton(
                   icon: const Icon(Icons.my_location),
-                  onPressed: widget.onLocationPressed,
+                  onPressed: () => widget.onLocationPressed(_selectedFormat),
                   tooltip: 'Get current location',
                 ),
                 filled: true,
@@ -62,7 +63,10 @@ class _WeatherSearchBarState extends State<WeatherSearchBar> {
               value: _selectedFormat,
               icon: const Icon(Icons.arrow_drop_down),
               elevation: 16,
-              style: const TextStyle(color: Colors.black87, fontSize: 16),
+              style: const TextStyle(
+                color: Colors.black87,
+                fontSize: 16,
+              ),
               underline: Container(
                 height: 0,
               ),
@@ -71,7 +75,6 @@ class _WeatherSearchBarState extends State<WeatherSearchBar> {
                   setState(() {
                     _selectedFormat = newValue;
                   });
-                  widget.onFormatChanged(newValue);
                 }
               },
               items: ApiFormat.values

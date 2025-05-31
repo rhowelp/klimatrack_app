@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:klimatrack_app/domain/constants/api_format.dart';
+import 'package:klimatrack_app/core/constants/api_format.dart';
 
 class LoadingWidget extends StatelessWidget {
   final ApiFormat format;
