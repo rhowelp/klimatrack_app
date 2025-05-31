@@ -27,16 +27,26 @@ class _SplashPageState extends State<SplashPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Center(
-        child: FadeInUp(
-          duration: const Duration(seconds: 2),
-          child: const Text(
-            'KlimaTrack',
-            style: TextStyle(
-              fontSize: 32,
-              fontWeight: FontWeight.bold,
-              color: Colors.green,
-            ),
+      body: FadeInUp(
+        duration: const Duration(seconds: 2),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(
+                'assets/images/klimatrack_logo.png',
+                height: 150,
+              ),
+              const SizedBox(height: 20),
+              const Text(
+                'KlimaTrack',
+                style: TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.green,
+                ),
+              ),
+            ],
           ),
         ),
       ),
