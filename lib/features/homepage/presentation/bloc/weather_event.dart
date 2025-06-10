@@ -8,7 +8,7 @@ abstract class WeatherEvent extends Equatable {
 }
 
 class FetchWeatherByCity extends WeatherEvent {
-  final String city;
+  final String city; 
   final ApiFormat format;
 
   const FetchWeatherByCity({required this.city, required this.format});

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'package:klimatrack_app/core/constants/api_format.dart';
 import 'package:klimatrack_app/core/injectors/dependency_injector.dart' as di;
@@ -9,6 +10,7 @@ import 'package:klimatrack_app/features/splash/presentation/splash_page.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await di.init();
+  await dotenv.load(fileName: ".env");
 
   runApp(const MyApp());
 }
