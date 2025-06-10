@@ -1,5 +1,7 @@
+import 'package:equatable/equatable.dart';
+
 /// Weather entity representing the core weather data model
-class Weather {
+class Weather extends Equatable {
   final Coord coord;
   final List<WeatherCondition> weather;
   final String base;
@@ -61,16 +63,36 @@ class Weather {
       cod: cod,
     );
   }
+
+  @override
+  List<Object?> get props => [
+        coord,
+        weather,
+        base,
+        main,
+        visibility,
+        wind,
+        clouds,
+        dt,
+        sys,
+        timezone,
+        id,
+        name,
+        cod,
+      ];
 }
 
-class Coord {
+class Coord extends Equatable {
   final double lon;
   final double lat;
 
   const Coord({required this.lon, required this.lat});
+
+  @override
+  List<Object?> get props => [lon, lat];
 }
 
-class WeatherCondition {
+class WeatherCondition extends Equatable {
   final int id;
   final String main;
   final String description;
@@ -82,9 +104,12 @@ class WeatherCondition {
     required this.description,
     required this.icon,
   });
+
+  @override
+  List<Object?> get props => [id, main, description, icon];
 }
 
-class Main {
+class Main extends Equatable {
   final double temp;
   final double feelsLike;
   final double tempMin;
@@ -104,22 +129,40 @@ class Main {
     required this.seaLevel,
     required this.grndLevel,
   });
+
+  @override
+  List<Object?> get props => [
+        temp,
+        feelsLike,
+        tempMin,
+        tempMax,
+        pressure,
+        humidity,
+        seaLevel,
+        grndLevel,
+      ];
 }
 
-class Wind {
+class Wind extends Equatable {
   final double speed;
   final int deg;
 
   const Wind({required this.speed, required this.deg});
+
+  @override
+  List<Object?> get props => [speed, deg];
 }
 
-class Clouds {
+class Clouds extends Equatable {
   final int all;
 
   const Clouds({required this.all});
+
+  @override
+  List<Object?> get props => [all];
 }
 
-class Sys {
+class Sys extends Equatable {
   final int type;
   final int id;
   final String country;
@@ -133,4 +176,7 @@ class Sys {
     required this.sunrise,
     required this.sunset,
   });
+
+  @override
+  List<Object?> get props => [type, id, country, sunrise, sunset];
 }
