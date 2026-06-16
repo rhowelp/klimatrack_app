@@ -1,9 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:klimatrack_app/core/constants/api_format.dart';
+import 'package:klimatrack_app/core/constants/constants.dart';
 import 'package:klimatrack_app/data/repositories/openweather_repository.dart';
 import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';
+import '../../helpers/env_test_helper.dart';
 import '../../helpers/test_helper.dart';
 import '../../helpers/test_helper.mocks.dart';
 
@@ -12,6 +14,8 @@ void main() {
   late MockDio mockDio;
   late OpenWeatherRepositoryImpl repository;
 
+  setUpAll(loadTestEnv);
+
   setUp(() {
     mockDio = MockDio();
     repository = OpenWeatherRepositoryImpl(mockDio);
@@ -19,13 +23,12 @@ void main() {
 
   group('getWeatherByCity', () {
     test('should return weather data when API call is successful', () async {
-      // arrange
       when(mockDio.get(
         '/weather',
         queryParameters: {
           'q': testCity,
           'units': 'metric',
-          'appid': 'b34c5c6eb380b8b70cb1c9cf6f04f5ec',
+          'appid': Constants.apiKey,
         },
       )).thenAnswer((_) async => Response(
             data: testWeatherResponse,
@@ -33,37 +36,33 @@ void main() {
             requestOptions: RequestOptions(path: '/weather'),
           ));
 
-      // act
       final result =
           await repository.getWeatherByCity(testCity, ApiFormat.json);
 
-      // assert
       expect(result, equals(testWeather));
       verify(mockDio.get(
         '/weather',
         queryParameters: {
           'q': testCity,
           'units': 'metric',
-          'appid': 'b34c5c6eb380b8b70cb1c9cf6f04f5ec',
+          'appid': Constants.apiKey,
         },
       )).called(1);
     });
 
     test('should throw exception when API call fails', () async {
-      // arrange
       when(mockDio.get(
         '/weather',
         queryParameters: {
           'q': testCity,
           'units': 'metric',
-          'appid': 'b34c5c6eb380b8b70cb1c9cf6f04f5ec',
+          'appid': Constants.apiKey,
         },
       )).thenThrow(DioException(
         requestOptions: RequestOptions(path: '/weather'),
         error: 'Error',
       ));
 
-      // act & assert
       expect(
         () => repository.getWeatherByCity(testCity, ApiFormat.json),
         throwsA(isA<Exception>()),
@@ -73,7 +72,6 @@ void main() {
 
   group('getWeatherByLocation', () {
     test('should return weather data when API call is successful', () async {
-      // arrange
       when(mockDio.get(
         any,
         queryParameters: anyNamed('queryParameters'),
@@ -87,14 +85,12 @@ void main() {
             requestOptions: RequestOptions(path: '/weather'),
           ));
 
-      // act
       final result = await repository.getWeatherByLocation(
         testLat,
         testLon,
         ApiFormat.json,
       );
 
-      // assert
       expect(result, equals(testWeather));
       verify(mockDio.get(
         any,
@@ -107,7 +103,6 @@ void main() {
     });
 
     test('should throw exception when API call fails', () async {
-      // arrange
       when(mockDio.get(
         any,
         queryParameters: anyNamed('queryParameters'),
@@ -120,7 +115,6 @@ void main() {
         error: 'Error',
       ));
 
-      // act & assert
       expect(
         () => repository.getWeatherByLocation(testLat, testLon, ApiFormat.json),
         throwsA(isA<Exception>()),

@@ -3,18 +3,27 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i5;
+import 'dart:async' as _i6;
 
-import 'package:geolocator/geolocator.dart' as _i9;
-import 'package:klimatrack_app/core/constants/api_format.dart' as _i6;
-import 'package:klimatrack_app/core/services/location_service.dart' as _i8;
-import 'package:klimatrack_app/domain/entities/weather.dart' as _i3;
+import 'package:klimatrack_app/domain/core/result.dart' as _i7;
+import 'package:klimatrack_app/domain/entities/weather.dart' as _i8;
+import 'package:klimatrack_app/domain/repositories/location_repository.dart'
+    as _i3;
 import 'package:klimatrack_app/domain/repositories/openweather_repository.dart'
     as _i2;
-import 'package:klimatrack_app/domain/usecases/get_weather_by_city.dart' as _i4;
+import 'package:klimatrack_app/domain/usecases/get_current_location_weather.dart'
+    as _i12;
+import 'package:klimatrack_app/domain/usecases/get_weather_by_city.dart' as _i5;
 import 'package:klimatrack_app/domain/usecases/get_weather_by_location.dart'
-    as _i7;
+    as _i4;
+import 'package:klimatrack_app/domain/usecases/params/get_current_location_weather_params.dart'
+    as _i13;
+import 'package:klimatrack_app/domain/usecases/params/get_weather_by_city_params.dart'
+    as _i9;
+import 'package:klimatrack_app/domain/usecases/params/get_weather_by_location_params.dart'
+    as _i11;
 import 'package:mockito/mockito.dart' as _i1;
+import 'package:mockito/src/dummies.dart' as _i10;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -41,8 +50,20 @@ class _FakeOpenWeatherRepository_0 extends _i1.SmartFake
         );
 }
 
-class _FakeWeather_1 extends _i1.SmartFake implements _i3.Weather {
-  _FakeWeather_1(
+class _FakeLocationRepository_1 extends _i1.SmartFake
+    implements _i3.LocationRepository {
+  _FakeLocationRepository_1(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
+class _FakeGetWeatherByLocationUseCase_2 extends _i1.SmartFake
+    implements _i4.GetWeatherByLocationUseCase {
+  _FakeGetWeatherByLocationUseCase_2(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -55,7 +76,7 @@ class _FakeWeather_1 extends _i1.SmartFake implements _i3.Weather {
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockGetWeatherByCityUseCase extends _i1.Mock
-    implements _i4.GetWeatherByCityUseCase {
+    implements _i5.GetWeatherByCityUseCase {
   MockGetWeatherByCityUseCase() {
     _i1.throwOnMissingStub(this);
   }
@@ -70,36 +91,29 @@ class MockGetWeatherByCityUseCase extends _i1.Mock
       ) as _i2.OpenWeatherRepository);
 
   @override
-  _i5.Future<_i3.Weather> call(
-    String? city,
-    _i6.ApiFormat? format,
-  ) =>
+  _i6.Future<_i7.Result<_i8.Weather>> call(
+          _i9.GetWeatherByCityParams? params) =>
       (super.noSuchMethod(
         Invocation.method(
           #call,
-          [
-            city,
-            format,
-          ],
+          [params],
         ),
-        returnValue: _i5.Future<_i3.Weather>.value(_FakeWeather_1(
+        returnValue: _i6.Future<_i7.Result<_i8.Weather>>.value(
+            _i10.dummyValue<_i7.Result<_i8.Weather>>(
           this,
           Invocation.method(
             #call,
-            [
-              city,
-              format,
-            ],
+            [params],
           ),
         )),
-      ) as _i5.Future<_i3.Weather>);
+      ) as _i6.Future<_i7.Result<_i8.Weather>>);
 }
 
 /// A class which mocks [GetWeatherByLocationUseCase].
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockGetWeatherByLocationUseCase extends _i1.Mock
-    implements _i7.GetWeatherByLocationUseCase {
+    implements _i4.GetWeatherByLocationUseCase {
   MockGetWeatherByLocationUseCase() {
     _i1.throwOnMissingStub(this);
   }
@@ -114,66 +128,67 @@ class MockGetWeatherByLocationUseCase extends _i1.Mock
       ) as _i2.OpenWeatherRepository);
 
   @override
-  _i5.Future<_i3.Weather> call(
-    double? latitude,
-    double? longitude,
-    _i6.ApiFormat? format,
-  ) =>
+  _i6.Future<_i7.Result<_i8.Weather>> call(
+          _i11.GetWeatherByLocationParams? params) =>
       (super.noSuchMethod(
         Invocation.method(
           #call,
-          [
-            latitude,
-            longitude,
-            format,
-          ],
+          [params],
         ),
-        returnValue: _i5.Future<_i3.Weather>.value(_FakeWeather_1(
+        returnValue: _i6.Future<_i7.Result<_i8.Weather>>.value(
+            _i10.dummyValue<_i7.Result<_i8.Weather>>(
           this,
           Invocation.method(
             #call,
-            [
-              latitude,
-              longitude,
-              format,
-            ],
+            [params],
           ),
         )),
-      ) as _i5.Future<_i3.Weather>);
+      ) as _i6.Future<_i7.Result<_i8.Weather>>);
 }
 
-/// A class which mocks [LocationService].
+/// A class which mocks [GetCurrentLocationWeatherUseCase].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockLocationService extends _i1.Mock implements _i8.LocationService {
-  MockLocationService() {
+class MockGetCurrentLocationWeatherUseCase extends _i1.Mock
+    implements _i12.GetCurrentLocationWeatherUseCase {
+  MockGetCurrentLocationWeatherUseCase() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i5.Future<_i9.Position?> getCurrentLocation() => (super.noSuchMethod(
-        Invocation.method(
-          #getCurrentLocation,
-          [],
+  _i3.LocationRepository get locationRepository => (super.noSuchMethod(
+        Invocation.getter(#locationRepository),
+        returnValue: _FakeLocationRepository_1(
+          this,
+          Invocation.getter(#locationRepository),
         ),
-        returnValue: _i5.Future<_i9.Position?>.value(),
-      ) as _i5.Future<_i9.Position?>);
+      ) as _i3.LocationRepository);
 
   @override
-  _i5.Future<bool> isLocationServiceEnabled() => (super.noSuchMethod(
-        Invocation.method(
-          #isLocationServiceEnabled,
-          [],
+  _i4.GetWeatherByLocationUseCase get getWeatherByLocation =>
+      (super.noSuchMethod(
+        Invocation.getter(#getWeatherByLocation),
+        returnValue: _FakeGetWeatherByLocationUseCase_2(
+          this,
+          Invocation.getter(#getWeatherByLocation),
         ),
-        returnValue: _i5.Future<bool>.value(false),
-      ) as _i5.Future<bool>);
+      ) as _i4.GetWeatherByLocationUseCase);
 
   @override
-  _i5.Future<_i9.Position?> getLastKnownLocation() => (super.noSuchMethod(
+  _i6.Future<_i7.Result<_i8.Weather>> call(
+          _i13.GetCurrentLocationWeatherParams? params) =>
+      (super.noSuchMethod(
         Invocation.method(
-          #getLastKnownLocation,
-          [],
+          #call,
+          [params],
         ),
-        returnValue: _i5.Future<_i9.Position?>.value(),
-      ) as _i5.Future<_i9.Position?>);
+        returnValue: _i6.Future<_i7.Result<_i8.Weather>>.value(
+            _i10.dummyValue<_i7.Result<_i8.Weather>>(
+          this,
+          Invocation.method(
+            #call,
+            [params],
+          ),
+        )),
+      ) as _i6.Future<_i7.Result<_i8.Weather>>);
 }

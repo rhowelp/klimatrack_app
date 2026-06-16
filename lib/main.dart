@@ -9,8 +9,8 @@ import 'package:klimatrack_app/features/splash/presentation/splash_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: '.env');
   await di.init();
-  await dotenv.load(fileName: ".env");
 
   runApp(const MyApp());
 }

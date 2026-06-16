@@ -1,5 +1,5 @@
 import 'package:klimatrack_app/domain/entities/weather.dart';
-import 'package:klimatrack_app/core/constants/api_format.dart';
+import 'package:klimatrack_app/domain/value_objects/api_format.dart';
 
 /// Repository interface for weather data operations
 abstract class OpenWeatherRepository {

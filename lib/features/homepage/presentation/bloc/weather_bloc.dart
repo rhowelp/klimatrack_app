@@ -1,10 +1,14 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:klimatrack_app/domain/core/result.dart';
 import 'package:klimatrack_app/domain/entities/weather.dart';
+import 'package:klimatrack_app/domain/usecases/get_current_location_weather.dart';
 import 'package:klimatrack_app/domain/usecases/get_weather_by_city.dart';
 import 'package:klimatrack_app/domain/usecases/get_weather_by_location.dart';
-import 'package:klimatrack_app/core/constants/api_format.dart';
-import 'package:klimatrack_app/core/services/location_service.dart';
+import 'package:klimatrack_app/domain/usecases/params/get_current_location_weather_params.dart';
+import 'package:klimatrack_app/domain/usecases/params/get_weather_by_city_params.dart';
+import 'package:klimatrack_app/domain/usecases/params/get_weather_by_location_params.dart';
+import 'package:klimatrack_app/domain/value_objects/api_format.dart';
 
 part 'weather_event.dart';
 part 'weather_state.dart';
@@ -12,12 +16,12 @@ part 'weather_state.dart';
 class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
   final GetWeatherByCityUseCase getWeatherByCity;
   final GetWeatherByLocationUseCase getWeatherByLocation;
-  final LocationService locationService;
+  final GetCurrentLocationWeatherUseCase getCurrentLocationWeather;
 
   WeatherBloc({
     required this.getWeatherByCity,
     required this.getWeatherByLocation,
-    required this.locationService,
+    required this.getCurrentLocationWeather,
   }) : super(WeatherInitial()) {
     on<FetchWeatherByCity>(_onFetchWeatherByCity);
     on<FetchWeatherByLocation>(_onFetchWeatherByLocation);
@@ -31,16 +35,16 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
   ) async {
     emit(
       WeatherLoading(
+        format: event.format,
         message:
             'Fetching weather for ${event.city} in ${event.format.name.toUpperCase()} format...',
       ),
     );
-    try {
-      final weather = await getWeatherByCity(event.city, event.format);
-      emit(WeatherLoaded(weather: weather));
-    } catch (e) {
-      emit(WeatherError(message: e.toString(), failedEvent: event));
-    }
+
+    final result = await getWeatherByCity(
+      GetWeatherByCityParams(city: event.city, format: event.format),
+    );
+    _emitResult(result, event, emit);
   }
 
   Future<void> _onFetchWeatherByLocation(
@@ -49,17 +53,20 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
   ) async {
     emit(
       WeatherLoading(
+        format: event.format,
         message:
             'Fetching weather for location (${event.latitude}, ${event.longitude}) in ${event.format.name.toUpperCase()} format...',
       ),
     );
-    try {
-      final weather = await getWeatherByLocation(
-          event.latitude, event.longitude, event.format);
-      emit(WeatherLoaded(weather: weather));
-    } catch (e) {
-      emit(WeatherError(message: e.toString(), failedEvent: event));
-    }
+
+    final result = await getWeatherByLocation(
+      GetWeatherByLocationParams(
+        latitude: event.latitude,
+        longitude: event.longitude,
+        format: event.format,
+      ),
+    );
+    _emitResult(result, event, emit);
   }
 
   Future<void> _onFetchCurrentLocationWeather(
@@ -68,35 +75,28 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
   ) async {
     emit(
       WeatherLoading(
+        format: event.format,
         message:
             'Fetching weather for current location in ${event.format.name.toUpperCase()} format...',
       ),
     );
-    try {
-      final isEnabled = await locationService.isLocationServiceEnabled();
-      if (!isEnabled) {
-        emit(WeatherError(
-            message: 'Please enable location services to get weather data',
-            failedEvent: event));
-        return;
-      }
 
-      final position = await locationService.getCurrentLocation();
-      if (position != null) {
-        add(FetchWeatherByLocation(
-            latitude: position.latitude,
-            longitude: position.longitude,
-            format: event.format));
-      } else {
-        emit(WeatherError(
-            message:
-                'Unable to get location. Please check your location permissions.',
-            failedEvent: event));
-      }
-    } catch (e) {
-      emit(WeatherError(
-          message: 'Error getting location: ${e.toString()}',
-          failedEvent: event));
+    final result = await getCurrentLocationWeather(
+      GetCurrentLocationWeatherParams(format: event.format),
+    );
+    _emitResult(result, event, emit);
+  }
+
+  void _emitResult(
+    Result<Weather> result,
+    WeatherEvent event,
+    Emitter<WeatherState> emit,
+  ) {
+    switch (result) {
+      case Success(:final value):
+        emit(WeatherLoaded(weather: value));
+      case Error(:final failure):
+        emit(WeatherError(message: failure.message, failedEvent: event));
     }
   }
 

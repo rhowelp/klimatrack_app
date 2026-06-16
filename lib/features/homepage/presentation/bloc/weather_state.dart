@@ -10,12 +10,16 @@ abstract class WeatherState extends Equatable {
 class WeatherInitial extends WeatherState {}
 
 class WeatherLoading extends WeatherState {
+  final ApiFormat format;
   final String message;
 
-  const WeatherLoading({required this.message});
+  const WeatherLoading({
+    required this.format,
+    required this.message,
+  });
 
   @override
-  List<Object> get props => [message];
+  List<Object> get props => [format, message];
 }
 
 class WeatherLoaded extends WeatherState {

@@ -55,8 +55,8 @@ class WeatherCard extends StatelessWidget {
               ),
               if (weather.weather.isNotEmpty) ...[
                 ShakeY(
-                  from: 20,
-                  duration: const Duration(milliseconds: 3500),
+                  from: 15,
+                  duration: const Duration(milliseconds: 4500),
                   infinite: true,
                   child: Image.asset(
                     'assets/weather_icons/${weather.weather.first.icon}.png',

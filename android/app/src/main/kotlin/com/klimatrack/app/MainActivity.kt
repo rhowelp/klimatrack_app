@@ -1,4 +1,4 @@
-package com.example.klimatrack_app
+package com.klimatrack.app
 
 import io.flutter.embedding.android.FlutterActivity
 

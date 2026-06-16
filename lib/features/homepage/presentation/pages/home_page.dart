@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:klimatrack_app/core/constants/api_format.dart';
 import 'package:klimatrack_app/features/homepage/presentation/bloc/weather_bloc.dart';
 import 'package:klimatrack_app/features/homepage/presentation/widgets/error_widget.dart';
 import 'package:klimatrack_app/features/homepage/presentation/widgets/loading_widget.dart';
@@ -39,11 +38,7 @@ class HomePage extends StatelessWidget {
               child: BlocBuilder<WeatherBloc, WeatherState>(
                 builder: (context, state) {
                   if (state is WeatherLoading) {
-                    return LoadingWidget(
-                      format: state.message.contains('XML')
-                          ? ApiFormat.xml
-                          : ApiFormat.json,
-                    );
+                    return LoadingWidget(format: state.format);
                   } else if (state is WeatherLoaded) {
                     return SingleChildScrollView(
                       padding: const EdgeInsets.all(16),

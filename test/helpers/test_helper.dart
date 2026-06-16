@@ -2,6 +2,10 @@ import 'package:dio/dio.dart';
 import 'package:mockito/annotations.dart';
 import 'package:klimatrack_app/core/services/location_service.dart';
 import 'package:klimatrack_app/data/repositories/openweather_repository.dart';
+import 'package:klimatrack_app/domain/repositories/location_repository.dart';
+import 'package:klimatrack_app/domain/repositories/openweather_repository.dart'
+    as domain;
+import 'package:klimatrack_app/domain/usecases/get_current_location_weather.dart';
 import 'package:klimatrack_app/domain/usecases/get_weather_by_city.dart';
 import 'package:klimatrack_app/domain/usecases/get_weather_by_location.dart';
 import 'package:klimatrack_app/domain/entities/weather.dart';
@@ -10,8 +14,11 @@ import 'package:klimatrack_app/domain/entities/weather.dart';
   Dio,
   LocationService,
   OpenWeatherRepositoryImpl,
+  domain.OpenWeatherRepository,
+  LocationRepository,
   GetWeatherByCityUseCase,
   GetWeatherByLocationUseCase,
+  GetCurrentLocationWeatherUseCase,
 ])
 void main() {}
 
